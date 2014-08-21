@@ -1,0 +1,26 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<kml xmlns='http://www.opengis.net/kml/2.2'>
+	<Document>
+		<name>Mapa sin nombre</name>
+		<description><![CDATA[]]></description>
+		<Folder>
+			<name>Capa sin nombre</name>
+			<Placemark>
+				<styleUrl>#icon-503-FF8277</styleUrl>
+				<name>AreaTresLabs</name>
+				<Point>
+					<coordinates>-58.431429862976074,-34.58128443025116,0.0</coordinates>
+				</Point>
+			</Placemark>
+		</Folder>
+		<Style id='icon-503-FF8277'>
+			<IconStyle>
+				<color>ff7782FF</color>
+				<scale>1.1</scale>
+				<Icon>
+					<href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+				</Icon>
+			</IconStyle>
+		</Style>
+	</Document>
+</kml>

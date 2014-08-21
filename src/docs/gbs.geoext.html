@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>gbs.geoext.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="gbs.geoext.html">
+                gbs.geoext.js
+              </a>
+            
+              
+              <a class="source" href="gbs.mapWidget.html">
+                gbs.mapWidget.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>gbs.geoext.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>A singleton for taking advantage of GeoExt in a smoother way</p>
+<p><strong>Library URL:</strong>
+<a href="http://geobootstrap.com.ar/gbs.geoext/gbs.geoext.js">http://geobootstrap.com.ar/gbs.geoext/gbs.geoext.js</a></p>
+<p><strong>jsbin:</strong>
+<a href="http://jsbin.com/tejovexu/16">http://jsbin.com/tejovexu/16</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p><code>GeoBootstrap</code> is an internal class following the singleton pattern
+<a href="http://addyosmani.com/resources/essentialjsdesignpatterns/book/#singletonpatternjavascript">http://addyosmani.com/resources/essentialjsdesignpatterns/book/#singletonpatternjavascript</a>
+The singleton gets instantiated like this:</p>
+<p><code>gbs = GeoBootstrap.getInstance();</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> GeoBootstrap = (<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p><code>gbsInstance</code> stores a reference to the Singleton
+to ensure we get only one instance with getInstance()</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">var</span> gbsInstance;
+
+  <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">init</span><span class="hljs-params">()</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p><code>instances</code> holds OpenLayers and GeoExt instances that we need to keep referenced.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> instances = {
+      baseLayer: <span class="hljs-keyword">new</span> OpenLayers.Layer.WMS(
+        <span class="hljs-string">"Capa Base Argenmap"</span>,
+        <span class="hljs-string">"http://wms.ign.gob.ar/geoserver/gwc/service/wms"</span>, {
+          layers: <span class="hljs-string">"capabaseargenmap"</span>
+        }
+      ),
+      overlayTestLayer: <span class="hljs-keyword">new</span> OpenLayers.Layer.WMS(
+        <span class="hljs-string">"Red Vial"</span>,
+        <span class="hljs-string">"http://wms.ign.gob.ar/geoserver/wms"</span>, {
+          layers: <span class="hljs-string">"red_vial"</span>,
+          transparent: <span class="hljs-literal">true</span>
+        }, {
+          isBaseLayer: <span class="hljs-literal">false</span>
+        }
+      ),
+      mapPanel: <span class="hljs-literal">null</span>,
+      legendPanel: <span class="hljs-literal">null</span>,
+      baseLayerContainer: <span class="hljs-literal">null</span>,
+      baseLayerTreePanel: <span class="hljs-literal">null</span>,
+      overlayLayerContainer: <span class="hljs-literal">null</span>,
+      overlayLayerTreePanel: <span class="hljs-literal">null</span>,
+      wmsCapabilitiesTreePanel: <span class="hljs-literal">null</span>
+    };</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>private</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">var</span> mapApi = <span class="hljs-keyword">new</span> OpenLayers.Map();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Private methods and variables</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">privateMethod</span><span class="hljs-params">()</span> {</span>
+      console.log(<span class="hljs-string">"I am private"</span>);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Returns defaults $.extend()ed with options</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">setupOptions</span><span class="hljs-params">(defaults, options)</span> {</span>
+      <span class="hljs-keyword">return</span> $.extend({}, defaults, options);
+    }
+
+    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">proxyizeUrl</span><span class="hljs-params">(url)</span> {</span>
+      <span class="hljs-keyword">var</span> proxyUrl = <span class="hljs-string">"http://crossproxy.aws.af.cm?u="</span>;
+      <span class="hljs-keyword">return</span> proxyUrl + <span class="hljs-built_in">encodeURIComponent</span>(url);
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p><strong>mapPanel</strong></p>
+<p>Options:</p>
+<ul>
+<li>applyTo: The div to use as placeholder for the map panel</li>
+<li>center: An <code>Openlayers.LonLat</code></li>
+<li>zoom: An initial zoom level</li>
+</ul>
+<p>Instantiates a GeoExt.mapPanel Component</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">mapPanel</span><span class="hljs-params">(options)</span> {</span>
+      options = setupOptions({
+        title: <span class="hljs-literal">null</span>, <span class="hljs-comment">// No title bar</span>
+        border: <span class="hljs-literal">false</span>, <span class="hljs-comment">// No border</span>
+        map: gbs.mapApi,
+        center: <span class="hljs-keyword">new</span> OpenLayers.LonLat(-<span class="hljs-number">34</span>, -<span class="hljs-number">40</span>),
+        zoom: <span class="hljs-number">5</span>
+      }, options);
+
+      gbs.mapApi.addLayer(instances.baseLayer);
+      gbs.mapApi.addLayer(instances.overlayTestLayer);
+
+      instances.mapPanel = <span class="hljs-keyword">new</span> GeoExt.MapPanel(options);
+      <span class="hljs-keyword">return</span> instances.mapPanel;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><strong>legendPanel</strong></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">legendPanel</span><span class="hljs-params">(options)</span> {</span>
+      options = setupOptions({
+        title: <span class="hljs-literal">null</span>, <span class="hljs-comment">// No title bar</span>
+        border: <span class="hljs-literal">false</span>, <span class="hljs-comment">// No border</span>
+        layerStore: instances.mapPanel.layers,
+        defaults: {
+          labelCls: <span class="hljs-string">'mylabel'</span>,
+        },
+        autoScroll: <span class="hljs-literal">true</span>,
+      }, options);
+
+      instances.legendPanel = <span class="hljs-keyword">new</span> GeoExt.LegendPanel(options);
+      <span class="hljs-keyword">return</span> instances.legendPanel;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p><strong>baseLayerTreePanel</strong></p>
+<p>instantiates an Ext.tree.Panel with an
+GeoExt.tree.BaseLayerContainer inside.
+gbs.instances.mapPanel.layers is used as layerStore</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">baseLayerTreePanel</span><span class="hljs-params">(options)</span> {</span>
+      instances.baseLayerContainer = <span class="hljs-keyword">new</span> GeoExt.tree.BaseLayerContainer({
+        layerStore: instances.mapPanel.layers
+      });
+      options = setupOptions({
+        title: <span class="hljs-literal">null</span>, <span class="hljs-comment">// No title bar</span>
+        border: <span class="hljs-literal">false</span>, <span class="hljs-comment">// No border</span>
+        root: instances.baseLayerContainer,
+        enableDD: <span class="hljs-literal">true</span>
+      }, options);
+      instances.baseLayerTreePanel = <span class="hljs-keyword">new</span> Ext.tree.TreePanel(options);
+      <span class="hljs-keyword">return</span> instances.baseLayerTreePanel;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>overlayLayerTreePanel</p>
+<p>instantiates an Ext.tree.Panel with an
+GeoExt.tree.BaseLayerContainer inside.
+gbs.instances.mapPanel.layers is used as layerStore</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">overlayLayerTreePanel</span><span class="hljs-params">(options)</span> {</span>
+      instances.overlayLayerContainer = <span class="hljs-keyword">new</span> GeoExt.tree.OverlayLayerContainer({
+        layerStore: instances.mapPanel.layers
+      });
+      options = setupOptions({
+        title: <span class="hljs-literal">null</span>, <span class="hljs-comment">// No title bar</span>
+        border: <span class="hljs-literal">false</span>, <span class="hljs-comment">// No border</span>
+        root: instances.overlayLayerContainer,
+        enableDD: <span class="hljs-literal">true</span>
+      }, options);
+      instances.overlayLayerTreePanel = <span class="hljs-keyword">new</span> Ext.tree.TreePanel(options);
+      <span class="hljs-keyword">return</span> instances.overlayLayerTreePanel;
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p><strong>wmsTreePanel</strong></p>
+<p> <code>gbs.wmsTreePanel({</code>
+   <code>url: // wms URL</code>
+ });</p>
+<p>Instantiates a new Ext.tree.TreePanel</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">wmsTreePanel</span><span class="hljs-params">(options)</span> {</span>
+      options = setupOptions({
+        title: <span class="hljs-literal">null</span>, <span class="hljs-comment">// No title bar</span>
+        border: <span class="hljs-literal">false</span>, <span class="hljs-comment">// No border</span>
+        url: <span class="hljs-string">"http://vmap0.tiles.osgeo.org/wms/vmap0?"</span>
+
+      }, options);
+
+
+
+      <span class="hljs-keyword">var</span> root = <span class="hljs-keyword">new</span> Ext.tree.AsyncTreeNode({
+        text: <span class="hljs-string">'WMS Capabilities Layers'</span>,
+        loader: <span class="hljs-keyword">new</span> GeoExt.tree.WMSCapabilitiesLoader({
+          url: proxyizeUrl(options.url),
+          layerOptions: {
+            buffer: <span class="hljs-number">0</span>,
+            singleTile: <span class="hljs-literal">false</span>,
+            ratio: <span class="hljs-number">1</span>
+          },
+          layerParams: {
+            <span class="hljs-string">'TRANSPARENT'</span>: <span class="hljs-string">'TRUE'</span>
+          },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>customize the createNode method to add a checkbox to nodes</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          createNode: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(attr)</span> {</span>
+            attr.checked = attr.leaf ? <span class="hljs-literal">false</span> : <span class="hljs-literal">undefined</span>;
+            <span class="hljs-keyword">return</span> GeoExt.tree.WMSCapabilitiesLoader.prototype.createNode.apply(<span class="hljs-keyword">this</span>, [attr]);
+          }
+        })
+      });
+
+      options = setupOptions({
+        root: root,
+        border: <span class="hljs-literal">false</span>, <span class="hljs-comment">// No border</span>
+        listeners: {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Add layers to the map when ckecked, remove when unchecked.
+Note that this does not take care of maintaining the layer
+order on the map.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>          <span class="hljs-string">'checkchange'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(node, checked)</span> {</span>
+            <span class="hljs-keyword">if</span> (checked === <span class="hljs-literal">true</span>) {
+              instances.mapPanel.map.addLayer(node.attributes.layer);
+            } <span class="hljs-keyword">else</span> {
+              instances.mapPanel.map.removeLayer(node.attributes.layer);
+            }
+          }
+        }
+      }, options);
+
+      instances.wmsCapabilitiesTreePanel = <span class="hljs-keyword">new</span> Ext.tree.TreePanel(options);
+      <span class="hljs-keyword">return</span> instances.wmsCapabilitiesTreePanel;
+    }
+
+    <span class="hljs-keyword">return</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Public methods and variables</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      instances: instances,
+      mapApi: mapApi,
+      mapPanel: mapPanel,
+      legendPanel: legendPanel,
+      baseLayerTreePanel: baseLayerTreePanel,
+      overlayLayerTreePanel: overlayLayerTreePanel,
+      wmsTreePanel: wmsTreePanel
+    };
+
+  };
+
+  <span class="hljs-keyword">return</span> {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Get the Singleton instance if one exists
+or create one if it doesn’t</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    getInstance: <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">()</span> {</span>
+      <span class="hljs-keyword">if</span> (!gbsInstance) {
+        gbsInstance = init();
+      }
+      <span class="hljs-keyword">return</span> gbsInstance;
+    }
+  };
+
+})();
+
+<span class="hljs-keyword">var</span> gbs = GeoBootstrap.getInstance();</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

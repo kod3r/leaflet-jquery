@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>gbs.mapWidget.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="gbs.geoext.html">
+                gbs.geoext.js
+              </a>
+            
+              
+              <a class="source" href="gbs.mapWidget.html">
+                gbs.mapWidget.js
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>gbs.mapWidget.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h2 id="leaflet-widget">Leaflet widget</h2>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>Example using methods and triggers
+<a href="http://jsbin.com/xefonobo/5/edit">http://jsbin.com/xefonobo/5/edit</a>
+the method name is the plugin name + triggername (all lowercase) </p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>jQuery widget to build a leaflet map</p>
+<p>Testbed <a href="http://jsbin.com/losobice/1/edit">http://jsbin.com/losobice/1/edit</a></p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <h2 id="sample-usage-">Sample usage:</h2>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-comment">/*
+
+var mapa = $("#map").leaflet({
+  "center": [-35, -59],
+  "zoom": 7
+});
+
+mapa.leaflet("addGeoJsonLayer", {
+  "url": "http://wms.ign.gob.ar/geoserver/IGN/ows?service=WFS&amp;version=1.0.0&amp;request=GetFeature&amp;typeName=IGN:localidad&amp;maxFeatures=50&amp;outputFormat=json"
+});
+
+*/</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p><code>$(selector).leaflet([options])</code> Sets up a Leaflet Map in <code>selector</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+$.widget(<span class="hljs-string">"gbs.leaflet"</span>, {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Parameter <code>options</code> is, of course, optional and can provide
+inicialization map parameters:</p>
+<ul>
+<li>zoom: int zoom level</li>
+<li>center: array[lat: float, lon: float] coordinates for the map center</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    options: {
+      center:[-<span class="hljs-number">34.505</span>, -<span class="hljs-number">59.09</span>],
+      zoom:<span class="hljs-number">5</span>
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Completar doocumentacion de eventos</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    widgetEventPrefix:<span class="hljs-string">"leaflet:"</span>,</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Internal reference to the <code>L.Map</code> object</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    map:<span class="hljs-literal">null</span>,
+    layerCollection:[],</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p><code>Constructor</code></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    _create:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> _this=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">this</span>.map = L.map(<span class="hljs-keyword">this</span>.element.get(<span class="hljs-number">0</span>), <span class="hljs-keyword">this</span>.options);
+        <span class="hljs-keyword">this</span>.addOsmLayer();
+        <span class="hljs-keyword">this</span>.element.droppable();
+        <span class="hljs-keyword">this</span>.map.on(<span class="hljs-string">'layeradd'</span>,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(l)</span>{</span>
+            <span class="hljs-keyword">if</span> (l.layer._layers !== <span class="hljs-literal">undefined</span>){
+                $.each(l.layer._layers, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(key,marker)</span>{</span>
+                    <span class="hljs-keyword">var</span> propiedades=marker.feature.properties;
+                    <span class="hljs-keyword">if</span> (!jQuery.isEmptyObject(propiedades)){
+                        <span class="hljs-keyword">var</span> content=<span class="hljs-string">""</span>;
+                        $.each(propiedades, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-params">(k,v)</span>{</span>
+                            content+=k.toString()+<span class="hljs-string">': '</span>+v.toString()+<span class="hljs-string">'&lt;br /&gt;'</span>;
+                        });
+
+                        marker.bindPopup(<span class="hljs-string">'&lt;p&gt;'</span>+content+<span class="hljs-string">'&lt;/p&gt;'</span>);
+                    }
+                    
+
+                });
+            }
+            
+            
+            _this._trigger(<span class="hljs-string">"LayerAdded"</span>,<span class="hljs-literal">null</span>, l);
+
+        });
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p><code>addWmsLayer(options:{})</code> adds a layer from a WMS service</p>
+<p><code>options</code>: not optional, needs to set basic parameters for the WMS service</p>
+<ul>
+<li>url: <em>string</em> Root url of the WMS service</li>
+<li>layers: <em>string</em> Layer to get from WMS service</li>
+<li>format: <em>string</em> Mime type for image format<blockquote>
+<p>image/png</p>
+</blockquote>
+</li>
+<li>transparent: <em>boolean</em> WMS parameter, has to be consisten with <code>format</code></li>
+<li>attribution: <em>string</em> Attribution of the WMS Layer/Service</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    addWmsLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        options = <span class="hljs-keyword">this</span>._mixinOptions({
+            layers: options.layer,
+            format: <span class="hljs-string">'image/png'</span>,
+            transparent: <span class="hljs-literal">true</span>,
+            attribution: <span class="hljs-string">"IGN"</span>        
+        }, options);
+        <span class="hljs-keyword">var</span> myWms = L.tileLayer.wms(options.url, options);
+  
+        myWms.addTo(<span class="hljs-keyword">this</span>.map);
+        <span class="hljs-keyword">this</span>.layerCollection.push(myWms);
+        <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"wmsLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myWms } );
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p><code>addGeoJsonLayer(options:{})</code> adds a layer from a GeoJSON object</p>
+<p><code>options</code>: not optional, needs to set basic parameters</p>
+<ul>
+<li>url: <em>string</em> Url of the GeoJSON file<blockquote>
+<p>The URL is passed through an open proxy to avoid 
+Same Origin Policy security error</p>
+</blockquote>
+</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addGeoJsonLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> _this=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"url"</span>] !== <span class="hljs-literal">undefined</span>) {
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            $.getJSON(url,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data)</span>{</span>
+                <span class="hljs-keyword">var</span> myGeoJson = L.geoJson(data).addTo(_this.map);
+                <span class="hljs-keyword">this</span>.layerCollection.push(myGeoJson);
+                <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"geoJsonLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGeoJson } );
+            });
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>){
+            <span class="hljs-keyword">var</span> myGeoJson = L.geoJson(options[<span class="hljs-string">"contentString"</span>]).addTo(_this.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myGeoJson);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"geoJsonLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGeoJson } );
+        }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p><code>addKmlLayer(options:{})</code> adds a layer from a KML file</p>
+<p><code>options</code>: not optional, needs to set basic parameters</p>
+<ul>
+<li>url: <em>string</em> Url of the KML file<blockquote>
+<p>The URL is passed through an open proxy to avoid 
+Same Origin Policy security error</p>
+</blockquote>
+</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addKmlLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> myKml;
+        <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"url"</span>] !== <span class="hljs-literal">undefined</span>) {
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            myKml=omnivore.kml(url).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myKml);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"kmlLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myKml } );
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>){
+            <span class="hljs-keyword">var</span> myKml=omnivore.kml.parse(options.contentString).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myKml);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"kmlLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myKml } );
+        }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p><code>addGpxLayer(options:{})</code> adds a layer from a GPS GPX file</p>
+<p><code>options</code>: not optional, needs to set basic parameters</p>
+<ul>
+<li>url: <em>string</em> Url of the GPX file<blockquote>
+<p>The URL is passed through an open proxy to avoid 
+Same Origin Policy security error</p>
+</blockquote>
+</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addGpxLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> myGpx;
+        <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"url"</span>] !== <span class="hljs-literal">undefined</span>) {
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            <span class="hljs-keyword">var</span> myGpx=omnivore.gpx(url).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myGpx);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"gpxLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGpx } );
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>) {
+            <span class="hljs-keyword">var</span> myGpx=omnivore.gpx.parse(options.contentString).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myGpx);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"gpxLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGpx } );
+        }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p><code>addCsvLayer(options:{})</code> adds a layer from a CSV file</p>
+<p><code>options</code>: not optional, needs to set basic parameters</p>
+<ul>
+<li>url: <em>string</em> Url of the CSV file<blockquote>
+<p>The URL is passed through an open proxy to avoid 
+Same Origin Policy security error</p>
+</blockquote>
+</li>
+<li>latfield: <em>string</em> Name of the column in the CSV file that represents Latitude values</li>
+<li>lonfield: <em>string</em> Name of the column in the CSV file that represents Longitude values</li>
+<li>delimiter: <em>string</em> character used to separate values in the same row</li>
+</ul>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>If latitude and longitude options are not set, it’ll search for columns named ‘LONGITUDE’ and ‘LATITUDE’</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+    addCsvLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> myCsv;
+        <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"url"</span>] !== <span class="hljs-literal">undefined</span>) {
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            <span class="hljs-keyword">var</span> myCsv=omnivore.csv(url,options).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myCsv);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"csvLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myCsv } );
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>) {
+            <span class="hljs-keyword">var</span> myCsv=omnivore.csv.parse(options.contentString,options).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myCsv);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"csvLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myCsv } );
+        }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p><code>addWktLayer(options:{})</code> adds a layer from a WKT file</p>
+<p><code>options</code>: not optional, needs to set basic parameters</p>
+<ul>
+<li>url: <em>string</em> Url of the WKT file<blockquote>
+<p>The URL is passed through an open proxy to avoid 
+Same Origin Policy security error</p>
+</blockquote>
+</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addWktLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> myWkt;
+        <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"url"</span>] !== <span class="hljs-literal">undefined</span>) {
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            <span class="hljs-keyword">var</span> myWkt=omnivore.wkt(url).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myWkt);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"wktLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myWkt } );
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>) {
+            <span class="hljs-keyword">var</span> myWkt=omnivore.wkt.parse(options.contentString).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myWkt);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"wktLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myWkt } );
+
+        }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p><code>addTopoJsonLayer(options:{})</code> adds a layer from a TopoJson file</p>
+<p><code>options</code>: not optional, needs to set basic parameters</p>
+<ul>
+<li>url: <em>string</em> Url of the TopoJson file<blockquote>
+<p>The URL is passed through an open proxy to avoid 
+Same Origin Policy security error</p>
+</blockquote>
+</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addTopoJsonLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> _this=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">var</span> myTopoJson;
+        <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"url"</span>] !== <span class="hljs-literal">undefined</span>) {
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            <span class="hljs-keyword">var</span> myTopoJson=omnivore.topojson(url).addTo(<span class="hljs-keyword">this</span>.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myTopoJson);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"topoJsonLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myTopoJson } );
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>) {
+            <span class="hljs-keyword">var</span> myTopoJson = L.geoJson(omnivore.topojson.parse(options.contentString)).addTo(_this.map);
+            <span class="hljs-keyword">this</span>.layerCollection.push(myTopoJson);
+            <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"topoJsonLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myTopoJson } );
+
+        }
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p><code>addOsmLayer()</code> adds a layer from OSM Service</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addOsmLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+        <span class="hljs-keyword">var</span> url = <span class="hljs-string">'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'</span>;
+        <span class="hljs-keyword">var</span> myOsm = L.tileLayer(url);
+        myOsm.addTo(<span class="hljs-keyword">this</span>.map);
+        <span class="hljs-keyword">this</span>.layerCollection.push(myOsm);
+        <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"osmLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myOsm } );
+
+
+    },
+
+    addGoogleLayer:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        options = <span class="hljs-keyword">this</span>._mixinOptions({
+            mapType:<span class="hljs-string">'ROADMAP'</span>   
+        }, options);
+        <span class="hljs-keyword">var</span> myGoogleLayer = <span class="hljs-keyword">new</span> L.Google(options.mapType);
+        <span class="hljs-keyword">this</span>.map.addLayer(myGoogleLayer);
+        <span class="hljs-keyword">this</span>.layerCollection.push(myGoogleLayer);
+        <span class="hljs-keyword">this</span>._trigger( <span class="hljs-string">"googleLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGoogleLayer } );
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Returns <code>URL</code> string routed through proxy</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    proxyizeUrl:<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(url)</span> {</span>
+      <span class="hljs-keyword">var</span> proxyUrl = <span class="hljs-string">"http://crossproxy.aws.af.cm?u="</span>;
+      <span class="hljs-keyword">return</span> proxyUrl + <span class="hljs-built_in">encodeURIComponent</span>(url);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Mixes user options with default options. Returns an unique options object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    _mixinOptions: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(defaultOptions, userOptions)</span> {</span>
+      <span class="hljs-keyword">return</span> $.extend({}, defaultOptions, userOptions);
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p><code>addJsonLayer</code> adds a layer from a JSON url/string</p>
+<p><code>options</code> <em>Object</em> <strong>required</strong></p>
+<ul>
+<li><code>url</code>: <em>string</em> url to retrieve the json string. <strong>NOT required if <code>contentString</code> is present</strong></li>
+<li><code>contentString</code>: <em>string</em> JSON.stringified array of objects. <strong>NOT required if <code>url</code> is present</strong></li>
+<li><code>root</code>: <em>string</em> path to new root for each entry. Ex: “results.items”</li>
+<li><code>structure</code>: <em>Object</em> hash of paths to values for:
+— <code>lat</code>: <em>string</em> path to object latitude value. Ex: “location.latitude”
+— <code>lon</code>: <em>string</em> path to object longitude value. Ex: “location.longitude”
+— <code>properties</code>: <em>Object</em> key/value pairs. Values are string paths</li>
+</ul>
+<p>Example:</p>
+<p>var obj = {
+    “results”: {
+        “items”:[
+            {
+                “venue”: “Humboldt 2145, Buenos Aires”
+                “location”: {
+                    “latitude”: -33.23,
+                    “longitude”: -57.47
+                }
+            }
+        ]
+    }
+}</p>
+<p>var paths = {
+    lat: “location.latitude”,
+    lon: “location.longitude”,
+    properties: {
+        “Address”:”venue” /<em> relative to root property</em>/
+    }
+}</p>
+<p>$(selector).leaflet(“addJsonLayer”,{
+    contentString: JSON.stringify(obj),
+    structure: paths,
+    root: “results.items”
+})</p>
+<p>Ejemplo de como se usa esto:</p>
+<p><a href="http://jsbin.com/bagak/1/edit">http://jsbin.com/bagak/1/edit</a></p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    addJsonLayer: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(options)</span>{</span>
+        <span class="hljs-keyword">var</span> _this=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">var</span> geoJson = {<span class="hljs-string">"type"</span>:<span class="hljs-string">"FeatureCollection"</span>,<span class="hljs-string">"features"</span>:[]};
+        <span class="hljs-keyword">if</span>(options.url!==<span class="hljs-literal">undefined</span>){
+            url=<span class="hljs-keyword">this</span>.proxyizeUrl(options.url);
+            $.getJSON(url, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(data, status, xhr)</span>{</span>
+                data = options.root ? data[options.root] : data;
+                $.each(data,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(i,v)</span>{</span>
+                    geoJson.features.push(_this.json2geojson(v, options.structure));
+                }); 
+                <span class="hljs-keyword">var</span> myGeoJson = L.geoJson(geoJson<span class="hljs-comment">/*,{onEachFeature:function(feature,layer){
+                    console.log(feature);
+                }}*/</span>);
+                myGeoJson.addTo(_this.map);
+                _this.layerCollection.push(myGeoJson);
+                _this._trigger( <span class="hljs-string">"jsonLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGeoJson } );
+            });
+        }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span>(options[<span class="hljs-string">"contentString"</span>] !== <span class="hljs-literal">undefined</span>) {</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>contentString tiene que ser un Array. []</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            json = <span class="hljs-built_in">JSON</span>.parse(options[<span class="hljs-string">"contentString"</span>]);
+
+            json = options.root ? _this.index(json,options.root) : json;
+            $.each(json,<span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(i,v)</span>{</span>
+                geoJson.features.push(_this.json2geojson(v, options.structure));
+            }); 
+            <span class="hljs-keyword">var</span> myGeoJson = L.geoJson(geoJson<span class="hljs-comment">/*,{onEachFeature:function(feature,layer){
+                console.log(feature);
+            }}*/</span>);
+            myGeoJson.addTo(_this.map);
+            _this.layerCollection.push(myGeoJson);
+            _this._trigger( <span class="hljs-string">"jsonLayerAdded"</span>, <span class="hljs-literal">null</span>, { layer: myGeoJson } );
+
+        }
+    },
+
+<span class="hljs-comment">/*
+
+        addGSLayer: function(options){
+        var _this=this;
+        var geoJson = {"type":"FeatureCollection","features":[]};
+
+        url="https://spreadsheets.google.com/feeds/list/"+options.id+"/od6/public/values?alt=json";
+        $.getJSON(url, function(data, status, xhr){
+            $.each(data,function(i,v){
+                geoJson.features.push(_this.json2geojson(v, options.structure));
+            }); 
+            var myGeoJson = L.geoJson(geoJson);
+            myGeoJson.addTo(_this.map);
+            _this.layerCollection.push(myGeoJson);
+            _this._trigger( "jsonLayerAdded", null, { layer: myGeoJson } );
+            
+
+        });
+    },
+*/</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p><code>json2geojson</code> converts JSON to GeoJSON</p>
+<p><code>jsonString</code> <em>string</em> | <em>object</em> string/object with geotagged items</p>
+<p><code>propsMap</code> <em>object</em> a map to mandatory properties needed for GeoJSON</p>
+<ul>
+<li><code>lat</code>: <em>string</em> path to latitud value</li>
+<li><code>lon</code>: <em>string</em> path to longitud value</li>
+<li><code>properties</code>: <em>object</em> key:value pairs. Values: <em>string</em> paths to values in JSON object</li>
+</ul>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    json2geojson: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(jsonString, propsMap)</span> {</span>
+        _this=<span class="hljs-keyword">this</span>;
+        <span class="hljs-keyword">var</span> json = <span class="hljs-built_in">Object</span>.prototype.toString.call(jsonString) == <span class="hljs-string">"[object Object]"</span> ? jsonString : <span class="hljs-built_in">JSON</span>.parse(jsonString);
+        <span class="hljs-keyword">var</span> geojson = {
+            type: <span class="hljs-string">"Feature"</span>, <span class="hljs-comment">//featureCollection</span>
+            geometry: {
+                type: <span class="hljs-string">'Point'</span>,
+                coordinates: [_this.index(json, propsMap.lat), _this.index(json, propsMap.lon)]
+            },
+            properties: {}
+        };
+      
+        $.each(propsMap.properties, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(k,v)</span>{</span>
+          geojson.properties[k] = _this.index(json,v);
+        });
+
+        <span class="hljs-keyword">return</span> geojson;
+    },</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>esto lo saque de
+<a href="http://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference">http://stackoverflow.com/questions/6393943/convert-javascript-string-in-dot-notation-into-an-object-reference</a>
+lee una propiedad de un objeto basado en un path (string) a esa propiedad. Ej:
+index({a:{b:{c:”valor”}}}, “a.b.c”) == “valor” // true </p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    index: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(obj, is, value)</span> {</span>
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> is == <span class="hljs-string">'string'</span>)
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.index(obj,is.split(<span class="hljs-string">'.'</span>), value);
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (is.length==<span class="hljs-number">1</span> &amp;&amp; value!==<span class="hljs-literal">undefined</span>)
+        <span class="hljs-keyword">return</span> obj[is[<span class="hljs-number">0</span>]] = value;
+    <span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> (is.length===<span class="hljs-number">0</span>)
+        <span class="hljs-keyword">return</span> obj;
+    <span class="hljs-keyword">else</span>
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>.index(obj[is[<span class="hljs-number">0</span>]],is.slice(<span class="hljs-number">1</span>), value);
+    }
+
+<span class="hljs-comment">/*
+    var structure = {
+        lat: "lat",
+        lon: "long",
+        properties: {
+            "Nombre": "nombre",
+            "Descripcion": "descripcion",
+            "Partido": "partido"
+        }
+    };
+    var la_url = "http://www.acumar.gov.ar/interface/default/desktop/js/mapacuenca/json/establecimientos_industriales_la_matanza.json";
+    --------
+    var structure = {
+        lat: "geometry.lat",
+        lon: "geometry.lng",
+        properties: {
+            "Address": "formatted_address"
+        }
+    }
+    var la_url = "https://maps.googleapis.com/maps/api/geocode/json?address=Amphitheatre+Parkway,+Mountain+View,+CA";
+*/</span>
+
+});</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Dropable widget</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+$.widget(<span class="hljs-string">"gbs.droppable"</span>, {
+  widgetEventPrefix: <span class="hljs-string">"droppable:"</span>,
+  options: {
+    readerMode: <span class="hljs-string">'text'</span>
+  },
+  waitingElement: <span class="hljs-literal">null</span>,
+  
+  _init: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span> {</span>
+    <span class="hljs-keyword">this</span>.waitingElement = $(<span class="hljs-string">'&lt;img src="http://geobootstrap.com.ar/gbs.geoext/img/loading.gif"/&gt;'</span>)
+    .css(<span class="hljs-string">'position'</span>,<span class="hljs-string">'absolute'</span>)
+    .css(<span class="hljs-string">'width'</span>,<span class="hljs-string">'45px'</span>)
+    .css(<span class="hljs-string">'top'</span>,(<span class="hljs-keyword">this</span>.element.height() - <span class="hljs-number">100</span>) / <span class="hljs-number">2</span> + <span class="hljs-string">'px'</span>)
+    .css(<span class="hljs-string">'left'</span>,(<span class="hljs-keyword">this</span>.element.width() - <span class="hljs-number">100</span>) / <span class="hljs-number">2</span> + <span class="hljs-string">'px'</span>);
+  },
+  
+  _create: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">()</span>{</span>
+    <span class="hljs-keyword">var</span> _this = <span class="hljs-keyword">this</span>;
+    <span class="hljs-keyword">if</span> (!window.File || !window.FileReader || !window.FileList || !window.Blob)
+      <span class="hljs-keyword">return</span>;
+    _this.reader = <span class="hljs-keyword">new</span> FileReader();
+    _this.element.bind(<span class="hljs-string">'dragover'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> {</span>
+      _this.onFileDrag(e);
+    }).bind(<span class="hljs-string">'drop'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> {</span>
+      _this.onFileDrop(e);
+    }).bind(<span class="hljs-string">'dragleave'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e)</span> {</span>
+      _this.onDragLeave(e);
+    });
+    _this.element.droppable({
+      fileLoaded: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(evt,data)</span>{</span>
+        <span class="hljs-keyword">var</span> ext = data.file.name.split(<span class="hljs-string">'.'</span>).pop();
+        <span class="hljs-keyword">switch</span>(ext) {
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"kml"</span>:</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-26">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-26">&#182;</a>
+              </div>
+              <p>$(this).leaflet(“parseKml”,data.contents);</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>            $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addKmlLayer"</span>, {contentString: data.contents});
+            <span class="hljs-keyword">break</span>;
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"gpx"</span>:
+            $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addGpxLayer"</span>, {contentString: data.contents});
+            <span class="hljs-keyword">break</span>;
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"geojson"</span>:
+            $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addGeoJsonLayer"</span>, {contentString: data.contents});
+            <span class="hljs-keyword">break</span>;
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"topojson"</span>:
+            $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addTopoJsonLayer"</span>, {contentString: data.contents});
+            <span class="hljs-keyword">break</span>;
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"json"</span> <span class="hljs-comment">/* We took as reference: http://techslides.com/d3-geojson-and-topojson-renderer/ */</span>:
+            <span class="hljs-keyword">var</span> contents;
+            <span class="hljs-keyword">try</span>{
+              contents = <span class="hljs-built_in">JSON</span>.parse(data.contents);
+            }<span class="hljs-keyword">catch</span>(e) {
+              alert(<span class="hljs-string">'You shall not pass!\r\n\r\nNo se pudo identificar el tipo de archivo :('</span>);
+              <span class="hljs-keyword">return</span>;
+            }
+            <span class="hljs-keyword">if</span>( $(<span class="hljs-keyword">this</span>).droppable(<span class="hljs-string">'isTopojson'</span>,contents) ) {
+              $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addTopoJsonLayer"</span>, {contentString: data.contents});
+            }<span class="hljs-keyword">else</span> <span class="hljs-keyword">if</span> ( $(<span class="hljs-keyword">this</span>).droppable(<span class="hljs-string">'isGeojson'</span>,contents) ) {
+              $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addGeoJsonLayer"</span>, {contentString: data.contents});
+            }<span class="hljs-keyword">else</span>{
+              alert(<span class="hljs-string">'You shall not pass!\r\n\r\nNo se pudo identificar el tipo de archivo :('</span>);
+            }
+            <span class="hljs-keyword">break</span>;
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"csv"</span>:
+            $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addCsvLayer"</span>, {contentString: data.contents});
+            <span class="hljs-keyword">break</span>;
+          <span class="hljs-keyword">case</span> <span class="hljs-string">"wkt"</span>:
+            $(<span class="hljs-keyword">this</span>).leaflet(<span class="hljs-string">"addWktLayer"</span>, {contentString: data.contents});
+            <span class="hljs-keyword">break</span>;
+        }
+      }
+    });
+  },
+  onDragLeave: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e <span class="hljs-comment">/*event*/</span>)</span> {</span>
+    <span class="hljs-keyword">this</span>.waitingElement.remove();
+  },
+  onFileDrag: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e <span class="hljs-comment">/*event*/</span>)</span> {</span>
+    e.originalEvent.stopPropagation();
+    e.originalEvent.preventDefault();
+    e.originalEvent.dataTransfer.dropEffect = <span class="hljs-string">'copy'</span>;
+    <span class="hljs-keyword">this</span>.waitingElement.appendTo(<span class="hljs-keyword">this</span>.element);
+  },
+  onFileDrop: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(e <span class="hljs-comment">/* event */</span>)</span> {</span>
+
+    e.originalEvent.stopPropagation();
+    e.originalEvent.preventDefault();
+    <span class="hljs-keyword">this</span>.waitingElement.remove();
+    <span class="hljs-keyword">var</span> _this = <span class="hljs-keyword">this</span>;
+
+    <span class="hljs-keyword">var</span> dt = e.originalEvent.dataTransfer;
+    <span class="hljs-keyword">var</span> files = dt.files;
+
+    <span class="hljs-keyword">if</span>(dt.files.length === <span class="hljs-number">1</span>) {
+      <span class="hljs-keyword">var</span> file = dt.files[<span class="hljs-number">0</span>];
+
+      _this.reader.onload = <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(progressEvent)</span> {</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-27">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-27">&#182;</a>
+              </div>
+              <p>_this.options.onDrop(progressEvent);</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>        _this._trigger(<span class="hljs-string">'fileLoaded'</span>, e, {instance: _this, file: file, contents: progressEvent.target.result});
+      };
+      <span class="hljs-keyword">switch</span> (_this.options.readerMode) {
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'text'</span>:
+          _this.reader.readAsText(file);
+          <span class="hljs-keyword">break</span>;
+        <span class="hljs-keyword">case</span> <span class="hljs-string">'binary'</span>:
+          <span class="hljs-keyword">break</span>;
+      }
+    }
+  },
+  isTopojson: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(contents <span class="hljs-comment">/* object */</span>)</span> {</span>
+    <span class="hljs-keyword">return</span> (contents.hasOwnProperty(<span class="hljs-string">"type"</span>) &amp;&amp; contents.type.toLowerCase() == <span class="hljs-string">"topology"</span>);
+  },
+  isGeojson: <span class="hljs-function"><span class="hljs-keyword">function</span><span class="hljs-params">(contents <span class="hljs-comment">/* object */</span>)</span> {</span>
+    <span class="hljs-keyword">return</span> (contents.hasOwnProperty(<span class="hljs-string">"type"</span>) &amp;&amp; (contents.type.toLowerCase() == <span class="hljs-string">"feature"</span> || contents.type.toLowerCase() == <span class="hljs-string">"featurecollection"</span>));
+  }
+});</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
